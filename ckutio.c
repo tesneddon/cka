@@ -2174,8 +2174,10 @@ sysinit() {
     if (s)
       ckstrncpy((char *)cttnam,s,DEVNAMLEN+1);
 #ifdef SVORPOSIX
+#ifndef ANDROID
     if (!cttnam[0])
       ctermid(cttnam);
+#endif /* ANDROID */
 #endif /* SVORPOSIX */
     if (!cttnam[0])
       ckstrncpy((char *)cttnam,dftty,DEVNAMLEN+1);
@@ -2369,7 +2371,7 @@ ttopen(ttname,lcl,modem,timo) char *ttname; int *lcl, modem, timo; {
 #define ctermid(x) strcpy(x,"")
 #else
 #ifdef SVORPOSIX
-#ifndef CIE
+#if !defined(CIE) && !defined(ANDROID)
     extern char *ctermid();		/* Wish they all had this! */
 #else					/* CIE Regulus */
 #define ctermid(x) strcpy(x,"")
