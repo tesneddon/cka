@@ -15,7 +15,7 @@ github project, which can be found here:
 use the following command to build the software for all ABIs:
 
     $ ndk-build NDK_PROJECT_PATH=./ \
-                APP_BUILD_SCRIPT=./Android.mk \
+                APP_BUILD_SCRIPT=./android.mk \
                 APP_ABI=all
 
     If you have any problems, flames, suggestions, praise, disbelief, etc.

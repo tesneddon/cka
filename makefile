@@ -1,30 +1,26 @@
 # makefile / Makefile / ckuker.mak / CKUKER.MAK
 #
-# Sun Aug 21 10:33:08 2011
-BUILDID=20110821
-CKVER= "9.0.302"
+# Fri Jul 20 15:31:30 2012
+BUILDID=20120720
+CKVER= "9.0.304"
 #
 # -- Makefile to build C-Kermit for UNIX and UNIX-like platforms --
 #
-# Copyright (C) 1985, 2011,
+# Copyright (C) 1985, 2012,
 #   Trustees of Columbia University in the City of New York.
 #   All rights reserved.  See the C-Kermit COPYING.TXT file or the
 #   copyright text in the ckcmai.c module for disclaimer and permissions.
 #   In case you can't find the COPYING.TXT file, it contains the 
 #   Simplified 3-Clause BSD License, which is an Open Source license.
 #
-# Author: Frank da Cruz, Columbia University
-# 612 West 115th Street, New York NY 10025-7799, USA
-# Email: fdc@columbia.edu
-# Web:   http://kermit.columbia.edu/
-# FTP:   ftp://kermit.columbia.edu/kermit/
+# Author: Frank da Cruz (principal author)
+# Email:  fdc@kermitproject.org
+# Web:    http://www.kermitproject.org
+# FTP:    ftp://ftp.kermitproject.org
 #
 # Note: Author is no longer at Columbia University or at the 115th Street
-# address effective 1 July 2011.  The email address should still work,
-# as well as the website and FTP addresses, for the foreseeable future.
-# For new developments, also check:
-#
-#    http://www.columbia.edu/~fdc/kermit/
+# address effective 1 July 2011.  Even so, C-Kermit remains Copyright
+# Columbia U because that is where it was written and further developed.
 #
 # Contributions from many others.  Special thanks to Jeff Altman for the
 # secure-build targets, Peter Eichhorn, assyst GmbH, for the consolidated
@@ -6100,10 +6096,14 @@ linux:
 	   test -f /usr/lib/libncurses.a  || \
 	   test -f /usr/lib/libncurses.so; then \
 	  HAVE_LIBCURSES='-lncurses'; \
+	else if test -f /usr/lib/$(MULTIARCH)/libncurses.so || \
+	   test -f /usr/lib/$(MULTIARCH)/libncurses.a  || \
+	   test -f /usr/lib/$(MULTIARCH)/libncurses.so; then \
+	  HAVE_LIBCURSES='-lncurses'; \
 	else if test -f /usr/lib64/libcurses.so || \
 	   test -f /usr/lib/libcurses.a || \
 	   test -f /usr/lib/libcurses.so; then \
-	     HAVE_LIBCURSES='-lcurses'; fi; fi; \
+	     HAVE_LIBCURSES='-lcurses'; fi; fi; fi; \
 	HAVE_CURSES=''; \
 	if test -n '$$HAVE_LIBCURSES'; then \
 	  if test -f /usr/include/ncurses.h; then \
@@ -6130,16 +6130,19 @@ linux:
 	|| test -f /usr/lib/libresolv.a || test -f /usr/lib/libresolv.so \
 	|| test -f /usr/lib/i386-linux-gnu/libresolv.a \
 	|| test -f /usr/lib/i386-linux-gnu/libresolv.so \
+	|| ls /lib/$(MULTIARCH)/libresolv.* > /dev/null 2> /dev/null \
 	|| ls /lib/x86_64-linux-gnu/libresolv.* > /dev/null 2> /dev/null; \
 	then echo -lresolv; fi` \
 	`if test -f /usr/lib64/libcrypt.a || test -f /usr/lib64/libcrypt.so \
 	|| test -f /usr/lib/libcrypt.a || test -f /usr/lib/libcrypt.so \
+	|| ls /lib/$(MULTIARCH)/libcrypt.* > /dev/null 2> /dev/null \
 	|| ls /lib/x86_64-linux-gnu/libcrypt.* > /dev/null 2> /dev/null; \
 	then echo -lcrypt; fi` \
-	`if test -f /usr/lib64/liblockdev.a || \
-	test -f /usr/lib64/liblockdev.so || \
-	test -f /usr/lib/liblockdev.a || \
-	test -f /usr/lib/liblockdev.so; \
+	`if test -f /usr/lib64/liblockdev.a \
+	|| test -f /usr/lib64/liblockdev.so \
+	|| test -f /usr/lib/liblockdev.a \
+	|| test -f /usr/lib/liblockdev.so \
+	|| ls /usr/lib/$(MULTIARCH)/liblockdev.* > /dev/null 2> /dev/null; \
 	then echo -llockdev; fi`" \
 	linuxa
 
@@ -6285,6 +6288,8 @@ linux+ssl linux+openssl linux+openssl+zlib+shadow+pam linux+openssl+shadow:
 # OK 2011/05/16
 # Add -UCK_DES if functions like des_ecb3_encrypt, es_random_seed,
 # come up missing at link time.
+# NOTE: MULTIARCH is defined externally, e.g. in DEB_HOST_MULTIARCH
+
 linux+krb5+ssl linux+krb5+openssl:
 	@echo 'Making C-Kermit $(CKVER) for Linux with Krb5 and OpenSSL...'
 	@case `openssl version` in \
@@ -6309,7 +6314,9 @@ linux+krb5+ssl linux+krb5+openssl:
 		K5CRYPTO='-lk5crypto'; \
         else if ls /usr/lib64/libk5crypto* > /dev/null 2> /dev/null; then \
                 K5CRYPTO='-lk5crypto'; \
-	fi; fi; fi; \
+        else if ls /usr/lib/$(MULTIARCH)/libk5crypto* > /dev/null 2> /dev/null; then \
+		K5CRYPTO='-lk5crypto'; \
+	fi; fi; fi; fi; \
 	COM_ERR=''; \
 	if ls /lib/libcom_err* > /dev/null 2> /dev/null; then \
 		COM_ERR='-lcom_err'; \
@@ -6317,7 +6324,7 @@ linux+krb5+ssl linux+krb5+openssl:
 	GSSAPILIB='-lgssapi'; \
 	if ls /lib/libgssapi_krb5* > /dev/null 2> /dev/null; then \
 		GSSAPILIB='-lgssapi_krb5'; \
-	else if ls /usr/lib/libgssapi_krb5* > /dev/null 2> /dev/null; then \
+	else if ls /usr/lib/$(MULTIARCH)/libgssapi_krb5* > /dev/null 2> /dev/null; then \
 		GSSAPILIB='-lgssapi_krb5'; \
 	else K5DIR=`echo $(K5LIB) | sed 's|-L||'`; \
 		if ls $$K5DIR/libgssapi_krb5* > /dev/null 2> /dev/null; then \

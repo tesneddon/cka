@@ -1,5 +1,5 @@
 char *protv =                                                     /* -*-C-*- */
-"C-Kermit Protocol Module 9.0.160, 16 Oct 2009";
+"C-Kermit Protocol Module 9.0.161, 20 Nov 2012";
 
 int kactive = 0;			/* Kermit protocol is active */
 
@@ -10,7 +10,7 @@ int kactive = 0;			/* Kermit protocol is active */
   Author: Frank da Cruz <fdc@columbia.edu>,
   Columbia University Academic Information Systems, New York City.
 
-  Copyright (C) 1985, 2009,
+  Copyright (C) 1985, 2012
     Trustees of Columbia University in the City of New York.
     All rights reserved.  See the C-Kermit COPYING.TXT file or the
     copyright text in the ckcmai.c module for disclaimer and permissions.
@@ -60,7 +60,8 @@ _PROTOTYP(int sndspace,(int));
   extern int timint, rtimo, nfils, hcflg, xflg, flow, mdmtyp, network;
   extern int oopts, omode, oname, opath, nopush, isguest, xcmdsrc, rcdactive;
   extern int rejection, moving, fncact, bye_active, urserver, fatalio;
-  extern int protocol, prefixing, filcnt, carrier, fnspath, interrupted;
+  extern int protocol, prefixing, carrier, fnspath, interrupted;
+  extern long filcnt;
   extern int recursive, inserver, nzxopts, idletmo, srvidl, xfrint;
   extern struct ck_p ptab[];
   extern int remfile, rempipe, xferstat, filestatus, wearealike, fackpath;
@@ -151,8 +152,9 @@ _PROTOTYP( int cmdsrc, (void) );
   extern int quiet, tsecs, parity, backgrd, nakstate, atcapu, wslotn, winlo;
   extern int wslots, success, xitsta, rprintf, discard, cdtimo, keep, fdispla;
   extern int timef, stdinf, rscapu, sendmode, epktflg, epktrcvd, epktsent;
-  extern int binary, fncnv;
-  extern long speed, ffc, crc16, calibrate, dest;
+  extern int binary, fncnv, dest;
+  extern long speed, crc16;
+  CK_OFF_T calibrate, ffc;
 #ifdef COMMENT
   extern char *TYPCMD, *DIRCMD, *DIRCM2;
 #endif /* COMMENT */
@@ -208,8 +210,9 @@ int whereflg = 1;			/* Unset with SET XFER REPORT */
 
 static VOID
 wheremsg() {
-    extern int quiet, filrej;
-    int n;
+    extern int quiet;
+    extern long filrej;
+    long n;
     n = filcnt - filrej;
     debug(F101,"wheremsg n","",n);
 
@@ -247,7 +250,7 @@ wheremsg() {
 	    switch (myjob) {
 	      case 's':
 		if (sfspec) {
-		    printf(" SENT: (%d files)",n);
+		    printf(" SENT: (%ld files)",n);
 		    if (srfspec)
 		      printf(" Last: [%s]",srfspec);
 		    printf(" (%s)\r\n", success ? "OK" : "FAILED");
@@ -256,7 +259,7 @@ wheremsg() {
 	      case 'r':
 	      case 'v':
 		if (rrfspec) {
-		    printf(" RCVD: (%d files)",n);
+		    printf(" RCVD: (%ld files)",n);
 		    if (rfspec)
 		      printf(" Last: [%s]",rfspec);
 		    printf(" (%s)\r\n", success ? "OK" : "FAILED");
@@ -1507,7 +1510,7 @@ _PROTOTYP(int sndwho,(char *));
 	ack();				/* If OK, acknowledge */
 #endif /* CK_RESEND */
     } else {				/* Otherwise */
-	extern long fsize;
+	extern CK_OFF_T fsize;
 	char *r;
 	r = getreason(iattr.reply.val);
 	ack1((CHAR *)iattr.reply.val);	/* refuse to accept the file */

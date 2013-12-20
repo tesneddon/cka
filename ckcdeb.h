@@ -1,7 +1,7 @@
 /*  C K C D E B . H  */
 
 /*
-Mon Aug 23 09:22:05 2010
+Fri Jul 20 15:20:20 2012
 
   NOTE TO CONTRIBUTORS: This file, and all the other C-Kermit files, must be
   compatible with C preprocessors that support only #ifdef, #else, #endif,

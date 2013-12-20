@@ -1,12 +1,12 @@
 #define CKUTIO_C
 
 #ifdef aegis
-char *ckxv = "Aegis Communications support, 9.0.326, 20 August 2011";
+char *ckxv = "Aegis Communications support, 9.0.327, 20 July 2012";
 #else
 #ifdef Plan9
-char *ckxv = "Plan 9 Communications support, 9.0.326, 20 August 2011";
+char *ckxv = "Plan 9 Communications support, 9.0.327, 20 July 2012";
 #else
-char *ckxv = "UNIX Communications support, 9.0.326, 20 August 2011";
+char *ckxv = "UNIX Communications support, 9.0.327, 20 July 2012";
 #endif /* Plan9 */
 #endif /* aegis */
 
@@ -2371,8 +2371,10 @@ ttopen(ttname,lcl,modem,timo) char *ttname; int *lcl, modem, timo; {
 #define ctermid(x) strcpy(x,"")
 #else
 #ifdef SVORPOSIX
-#if !defined(CIE) && !defined(ANDROID)
+#ifndef CIE
+#ifndef ANDROID
     extern char *ctermid();		/* Wish they all had this! */
+#endif /* ANDROID */
 #else					/* CIE Regulus */
 #define ctermid(x) strcpy(x,"")
 #endif /* CIE */
