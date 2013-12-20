@@ -5287,6 +5287,12 @@ typedef union wait WAIT_T;
 #undef  _BSD
 #endif /* _BSD */
 #endif /* OSF */
+#ifdef ANDROID
+#ifdef _mips
+/* Without ths the Android MIPS compile produces lots of warnings */
+struct siginfo;
+#endif /* _mips */
+#endif /* ANDROID */
 #include <sys/wait.h>
 #define CK_WAIT_H
 #ifndef WAIT_T
