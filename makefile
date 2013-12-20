@@ -6007,8 +6007,16 @@ cie:
 	"CFLAGS = -DATTSV -DNOFILEH -DCIE -DNOLEARN $(KFLAGS) -O" "LNKFLAGS ="
 
 # Android.
-android:
-	@echo Please use \"make -f android.mk\" to build C-Kermit for Android.
+android: ckcpro.c
+	@echo 'Making C-Kermit $(CKVER) for Android...'
+	@if command -v ndk-build; then \
+	    ndk-build NDK_PROJECT_PATH=./ \
+		APP_BUILD_SCRIPT=./android.mk \
+		APP_ABI=all \
+		LOCAL_DISABLE_FORMAT_STRING_CHECKS=true; \
+	else \
+	    echo 'Could not find ndk-build in $$PATH'; \
+	fi
 
 # Linux 1.2 or later with gcc, dynamic libraries, ncurses, TCP/IP.
 #
