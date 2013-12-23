@@ -1,3 +1,5 @@
+ckcpro.c
 libs/*
 obj/*
-
+*.o
+wart
