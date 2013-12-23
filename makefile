@@ -63,7 +63,6 @@ CKVER= "9.0.304"
 # environment variables.  For that reason, don't use 'make -e'.
 #
 # Certain UNIX variations have their own separate makefiles:
-#  . For Android, use android.mk.
 #  . For 2.10 or 2.11 BSD on the DEC PDP-11, use ckubs2.mak.
 #  . For Plan 9, use ckpker.mk.
 #
@@ -124,7 +123,7 @@ CKVER= "9.0.304"
 # --------------------------
 # Some commonly used targets:
 #
-# + "make -f android.mk" (separate makefile) for Android.
+# + "make android" for Android.
 # + "make linux" should work for any version of Linux on any hardware.
 # + "make linux+ssl" ditto, with OpenSSL security added.
 # + "make linux+krb5" ditto, with Kerberos 5 security added.
